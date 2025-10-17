@@ -5,10 +5,12 @@
 ; additions: (C)2020 Michael Steil, License: 2-clause BSD
 .include "io.inc"
 .include "banks.inc"
+.include "kflags.inc"
 
 .feature labels_without_colons
 
 .import cint, ramtas, ioinit, enter_basic, restor, vera_wait_ready, call_audio_init, boot_cartridge, i2c_restore, ps2data_init, detect_machine_properties
+.export kflags
 .include "65c816.inc"
 
 .export start
@@ -39,7 +41,15 @@ start	; Let diagnostic bank handle diagnostic boot if needed
 	jsr call_audio_init           ;initialize audio API and HW.
 	jsr detect_machine_properties ;detect machine capabilities/properties and store result internally
 	jsr boot_cartridge            ;if a cart ROM in bank 32, jump into its start location
+
+	lda #VSYNCIRQ | LINEIRQ | EXTIRQ | PS2EN | SNESEN
+	sta kflags
+
 	cli                           ;interrupts okay now
 
 	sec
 	jmp enter_basic
+
+.segment "KFLAGS"
+	.assert *=$02bf, error, "Address of kflags guaranteed to be at $02bf"
+	kflags: .res 1

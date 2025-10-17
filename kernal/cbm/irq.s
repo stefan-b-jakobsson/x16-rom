@@ -20,23 +20,48 @@
 .import ps2data_fetch
 .export panic
 .export irq_emulated_impl
+.import kflags
 
 .include "banks.inc"
 .include "io.inc"
+.include "kflags.inc"
 
 ; VBLANK IRQ handler
 ;
 .macro irq_impl
+	; Check flags
+	lda VERA_ISR
+	and #3 ;Keep only VERA VSYNC and LINE IRQ bits
+	beq @1 ;Not an IRQ from VERA
+	and kflags
+	bne @ps2 ;There's a match in kflags, do ISR tasks
+	bra @ack ;Else skip ISR tasks
+@1:	lda kflags
+	and #EXTIRQ
+	beq @ack ;kflags set to ignore external IRQs, skip ISR tasks
+
+	; Fetch PS/2 data, update keyboard and mouse
+@ps2:	lda kflags
+	and #PS2EN
+	beq @snes ;Fetching PS/2 data disabled in kflags register
 	jsr ps2data_fetch
 	jsr mouse_scan  ;scan mouse (do this first to avoid sprite tearing)
-	jsr joystick_scan
-	jsr clock_update
-	jsr cursor_blink
 	jsr kbd_scan
+	
+	; Fetch SNES joystick data
+@snes:	lda kflags
+	and #SNESEN
+	beq @other ;Fetching joystick data disabled in kflags register
+	jsr joystick_scan
+	
+	; Other chores
+@other:	jsr clock_update
+	jsr cursor_blink
 	jsr led_update
 
-	lda #1
-	sta VERA_ISR    ;ack VERA VBLANK
+	;ack VSYNC and LINE IRQ
+@ack:	lda #3
+	sta VERA_ISR
 .endmacro
 
 irq_emulated_impl:
@@ -59,4 +84,6 @@ panic	lda #3          ;reset default i/o
 	sta dflto
 	lda #0
 	sta dfltn
+	lda #VSYNCIRQ | LINEIRQ | EXTIRQ | PS2EN | SNESEN
+	sta kflags
 	jmp screen_init
