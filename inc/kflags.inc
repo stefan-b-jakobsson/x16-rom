@@ -1,0 +1,5 @@
+VSYNCIRQ 	= (1<<0)
+LINEIRQ		= (1<<1)
+EXTIRQ		= (1<<2)
+PS2EN		= (1<<3)
+SNESEN		= (1<<4)
