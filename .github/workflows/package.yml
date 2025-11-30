@@ -23,7 +23,7 @@ jobs:
     - name: Make package
       run: |
         mkdir build/package
-        python script/make_package.py
+        python scripts/make_package.py
     
     - name: Upload package
       uses: actions/upload-artifact@v4

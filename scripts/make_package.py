@@ -294,16 +294,16 @@ def github_fetch_latest(user, project, filename_filter, save_dir, save_name):
 print("Searching for latest Github releases...")
 
 # Fetch Kernal ROM
-rom_version = x16pkg.github_fetch_latest("X16Community", "x16-rom", "rom.bin$", "build/package", "rom.bin")
+rom_version = github_fetch_latest("X16Community", "x16-rom", "rom.bin$", "build/package", "rom.bin")
 if rom_version == None:
     print("Kernal ROM not found")
     quit()
 else:
     print("Downloaded Kernal ROM " + rom_version + " -> build/package/rom.bin")
-    rom_real_version = x16pkg.get_rom_version("build/package/rom.bin")
+    rom_real_version = get_rom_version("build/package/rom.bin")
 
 # Fetch VERA firmware
-vera_version = x16pkg.github_fetch_latest("X16Community", "vera-module", ".bin$", "build/package", "vera.bin")
+vera_version = github_fetch_latest("X16Community", "vera-module", ".bin$", "build/package", "vera.bin")
 if vera_version == None:
     print("VERA firmware not found")
     quit()
@@ -314,7 +314,7 @@ else:
         vera_real_version[i] = int(vera_real_version[i])
 
 # Fetch SMC firmware
-smc_version = x16pkg.github_fetch_latest("X16Community", "x16-smc", "x16-smc.ino.hex$", "build/package", "x16-smc.ino.hex")
+smc_version = github_fetch_latest("X16Community", "x16-smc", "x16-smc.ino.hex$", "build/package", "x16-smc.ino.hex")
 if smc_version == None:
     print("SMC firmware not found")
     quit()
@@ -335,5 +335,5 @@ for i in range(0,len(sys.argv)):
         if sys.argv[i] == "-desc":
             description = sys.argv[i+1]
 
-x16pkg.make_pkg(description, createdby, "build/package/rom.bin", "build/package/vera.bin", "build/package/x16-smc.ino.hex", vera_real_version, smc_real_version, "build/package/x16-latest.pkg")
-print("Created package -> build/package/x16-r" + rom_version + ".pkg")
+make_pkg(description, createdby, "build/package/rom.bin", "build/package/vera.bin", "build/package/x16-smc.ino.hex", vera_real_version, smc_real_version, "build/package/x16-latest.pkg")
+print("Created package -> build/package/x16-" + rom_version + ".pkg")
