@@ -27,6 +27,6 @@ jobs:
     
     - name: Upload package
       uses: actions/upload-artifact@v4
-        with:
-          name: ROM Release Package
-          path: build/package/*.pkg
+      with:
+        name: ROM Release Package
+        path: build/package/*.pkg
