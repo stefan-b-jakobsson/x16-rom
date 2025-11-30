@@ -22,6 +22,7 @@ jobs:
 
     - name: Make package
       run: |
+        mkdir build
         mkdir build/package
         python scripts/make_package.py
     
