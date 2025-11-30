@@ -335,5 +335,5 @@ for i in range(0,len(sys.argv)):
         if sys.argv[i] == "-desc":
             description = sys.argv[i+1]
 
-make_pkg(description, createdby, "build/package/rom.bin", "build/package/vera.bin", "build/package/x16-smc.ino.hex", vera_real_version, smc_real_version, "build/package/x16-latest.pkg")
+make_pkg(description, createdby, "build/package/rom.bin", "build/package/vera.bin", "build/package/x16-smc.ino.hex", vera_real_version, smc_real_version, "build/package/x16-" + rom_version + ".pkg")
 print("Created package -> build/package/x16-" + rom_version + ".pkg")
