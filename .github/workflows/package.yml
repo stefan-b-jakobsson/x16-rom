@@ -8,12 +8,25 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    
     - uses: actions/checkout@v3
+    
     - uses: actions/setup-python@v4
       with:
         python-version: '3.9'
+    
     - name: Install python packages
       run: |
         pip install intelhex
         pip install certifi
-      
+
+    - name: Make package
+      run: |
+        mkdir build/package
+        python script/make_package.py
+    
+    - name: Upload package
+      uses: actions/upload-artifact@v4
+        with:
+          name: ROM Release Package
+          path: build/package/*.pkg
