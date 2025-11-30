@@ -1,0 +1,19 @@
+name: Release Package Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    - name: Install python packages
+      run: |
+        pip install intelhex
+        pip install certifi
+      
